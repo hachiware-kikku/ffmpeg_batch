@@ -114,8 +114,7 @@ for shakiness, accuracy, stepsize, mincontrast, tripod_1pass, smoothing, optalgo
                   "optzoom={}:zoomspeed={}:interpol={}:tripod={}".format(
         smoothing, optalgo, maxshift, maxangle, crop, relative, zoom, optzoom, zoomspeed, interpol, tripod_2pass)
 
-    outfile_name = "1pass_shake{}_acc{}_step{}_cont{}_tipod{}_2pass_smooth{}_algo{}_shift{}_angle{}_crop{}_rela{}_" \
-                   "zoom{}_ozoom{}_zomspd{}_pol{}_tripod{}".format(
+    outfile_name = "1pass_{}_{}_{}_{}_{}_2pass_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}".format(
         shakiness, accuracy, stepsize, mincontrast, tripod_1pass, smoothing, optalgo, maxshift, maxangle, crop,
         relative, zoom, optzoom, zoomspeed, interpol, tripod_2pass)
 
