@@ -131,3 +131,4 @@ dmypy.json
 ffmpeg.exe
 /.idea/*
 /*.mp4
+transforms.trf
