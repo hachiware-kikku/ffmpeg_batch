@@ -139,7 +139,7 @@ IF NOT EXIST "%INPUT_FILE%" GOTO :EOF
 ffmpeg.exe -i "%INPUT_FILE%" -vf ^
 vidstabtransform=smoothing=%SMOOTHING%:optalgo=%OPTALGO%:maxshift=%MAXSHIFT%:maxangle=%MAXANGLE%:crop=%CROP%:relative=%RELATIVE%:zoom=%ZOOM%:optzoom=%OPTZOOM%:^
 zoomspeed=%ZOOMSPEED%:interpol=%INTERPOL%:tripod=%TRIPOD_2PASS%,unsharp -y "%FILE_NAME%"
-IF ERRORLEVEL 1 call :ONERROR
+IF ERRORLEVEL 1 call :ONERROR "%INPUT_FILE%"
 MOVE /Y "%FILE_NAME%" "%OUTPUT_DIR%"
 IF EXIST "%INPUT_FILE%" DEL /F "%INPUT_FILE%"
 GOTO :EOF
@@ -148,7 +148,7 @@ GOTO :EOF
 @rem # ffmpegé∏îséûÇÃèàóù
 @rem ###########################################################
 :ONERROR
-MOVE /Y "%~0" "%OUTPUT_DIR%"
+MOVE /Y "%~1" "%OUTPUT_DIR%"
 GOTO :EOF
 
 
