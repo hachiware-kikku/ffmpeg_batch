@@ -9,7 +9,7 @@ import sys
 ###########################################################
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(sys.argv[0])))
 os.chdir(BASE_DIR)
-FFMPEG = os.path.join(BASE_DIR, "ffmpeg.exe")
+FFMPEG = os.path.join(BASE_DIR, "../ffmpeg.exe")
 TESTDATA = os.path.join(BASE_DIR, "testdata.mp4")
 
 ##### 1パス解析用のオプション #################################
