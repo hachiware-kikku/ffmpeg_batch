@@ -5,10 +5,8 @@
 @rem ###########################################################
 
 @rem ##### ディレクトリ定義 #######################################
-set PLAIN_000=G:\000_plain
-set SPEEDUP_003=G:\300_speedup
-set STABILIZE_006=G:\600_stabilize
-set COMPLETE_900=G:\900_complete
+set INPUT_DIR=G:\300_stabilize_in
+set OUTPUT_DIR=G:\400_stabilize_out
 
 @rem ##### 1パス解析用のオプション #################################
 @REM # shakiness
@@ -115,40 +113,42 @@ set TRIPOD_2PASS=0
 @rem ###########################################################
 :MAIN
 
-@REM 速度UPの対象ファイル
-FOR /R %PLAIN_000% %%i IN (*.mp4) do call :SPEEDUP "%%i"
-@REM スタビライズ
-
+for /r %INPUT_DIR% %%i in (*.mp4) do  call :STABILIZE "%%i"
 
 echo WAIT 500 sec
 timeout /t 500
 
 GOTO :MAIN
 
+
 @rem ###########################################################
-@rem # 速度を3倍にする
+@rem # スタビライズの開始
 @rem ###########################################################
-:SPEEDUP
+:STABILIZE
 set INPUT_FILE=%~1
 set FILE_NAME=%~nx1
 echo INPUT_FILE: %INPUT_FILE%
 echo FILE_NAME: %FILE_NAME%
-ffmpeg.exe -i "%INPUT_FILE%" -vf setpts=PTS/3.0 -af atempo=3.0 -y "%FILE_NAME%"
-IF      ERRORLEVEL 1 MOVE /Y "%INPUT_FILE%" "%SPEEDUP_003%"
-IF NOT  ERRORLEVEL 1 MOVE /Y "%FILE_NAME%" "%SPEEDUP_003%"
-IF EXIST    "%INPUT_FILE%" DEL /F "%INPUT_FILE%"
+
+@rem アナライズ
+ffmpeg.exe -i "%INPUT_FILE%" -vf vidstabdetect=shakiness=%SHAKINESS%:accuracy=%ACCURACY%:stepsize=%STEPSIZE%:mincontrast=%MICONTRAST%:tripod=%TRIPOD_1PASS% -an -f null -
+IF ERRORLEVEL 1 call :ONERROR "%INPUT_FILE%"
+IF NOT EXIST "%INPUT_FILE%" GOTO :EOF
+
+@rem スタビライズ
+ffmpeg.exe -i "%INPUT_FILE%" -vf ^
+vidstabtransform=smoothing=%SMOOTHING%:optalgo=%OPTALGO%:maxshift=%MAXSHIFT%:maxangle=%MAXANGLE%:crop=%CROP%:relative=%RELATIVE%:zoom=%ZOOM%:optzoom=%OPTZOOM%:^
+zoomspeed=%ZOOMSPEED%:interpol=%INTERPOL%:tripod=%TRIPOD_2PASS%,unsharp -y "%FILE_NAME%"
+IF ERRORLEVEL 1 call :ONERROR
+MOVE /Y "%FILE_NAME%" "%OUTPUT_DIR%"
+IF EXIST "%INPUT_FILE%" DEL /F "%INPUT_FILE%"
+GOTO :EOF
+
+@rem ###########################################################
+@rem # ffmpeg失敗時の処理
+@rem ###########################################################
+:ONERROR
+MOVE /Y "%~0" "%OUTPUT_DIR%"
 GOTO :EOF
 
 
-
-@REM ffmpeg.exe -i testdata.mp4 -vf vidstabdetect=shakiness=%SHAKINESS%:accuracy=%ACCURACY%:stepsize=%STEPSIZE%:mincontrast=%MICONTRAST%:tripod=%TRIPOD_1PASS% -an -f null -
-
-@REM ffmpeg.exe -i testdata.mp4 -vf ^
-@REM vidstabtransform=smoothing=%SMOOTHING%:optalgo=%OPTALGO%:maxshift=%MAXSHIFT%:maxangle=%MAXANGLE%:crop=%CROP%:relative=%RELATIVE%:zoom=%ZOOM%:optzoom=%OPTZOOM%:^
-@REM zoomspeed=%ZOOMSPEED%:interpol=%INTERPOL%:tripod=%TRIPOD_2PASS% ^
-@REM -y 1pass_%SHAKINESS%_%ACCURACY%_%STEPSIZE%_%MICONTRAST%_%TRIPOD_1PASS%_2pass_%SMOOTHING%_%OPTALGO%_%MAXSHIFT%_%MAXANGLE%_%CROP%_%RELATIVE%_%ZOOM%_%OPTZOOM%_%INTERPOL%_%TRIPOD_2PASS%.mp4
-
-@REM ffmpeg.exe -i testdata.mp4 -vf ^
-@REM vidstabtransform=smoothing=%SMOOTHING%:optalgo=%OPTALGO%:maxshift=%MAXSHIFT%:maxangle=%MAXANGLE%:crop=%CROP%:relative=%RELATIVE%:zoom=%ZOOM%:optzoom=%OPTZOOM%:^
-@REM zoomspeed=%ZOOMSPEED%:interpol=%INTERPOL%:tripod=%TRIPOD_2PASS%,unsharp ^
-@REM -y 1pass_%SHAKINESS%_%ACCURACY%_%STEPSIZE%_%MICONTRAST%_%TRIPOD_1PASS%_2pass_%SMOOTHING%_%OPTALGO%_%MAXSHIFT%_%MAXANGLE%_%CROP%_%RELATIVE%_%ZOOM%_%OPTZOOM%_%INTERPOL%_%TRIPOD_2PASS%_unsharp.mp4
