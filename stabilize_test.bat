@@ -60,8 +60,8 @@ set MAXANGLE=-1
 @REM # 1, black 黒色で表示する
 @REM # invert 揺れを反転するかどうか：既定値は 0
 @REM # 変更しなくても良い
-@REM set CROP=0
-set CROP=1
+set CROP=0
+@REM set CROP=1
 @REM # relative
 @REM # 揺れの参照フレームを相対参照するか、絶対参照するか：既定値は 1（相対参照）
 @REM # 0 は絶対参照
@@ -71,7 +71,9 @@ set RELATIVE=1
 @REM # 何パーセント拡大するか：既定値は 0
 @REM # 揺れが大きい場合に補正により情報がない映像が増え、それを回避するために拡大することで補正映像を表示させないようにできる。
 @REM 0未満で縮小、0より大きいと拡大。0は拡大せずそのままのサイズ：-100 から 100 まで
-set ZOOM=0
+set ZOOM=-100
+@REM set ZOOM=-50
+@REM set ZOOM=-75
 @REM set ZOOM=0
 @REM set ZOOM=100
 @REM # optzoom

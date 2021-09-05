@@ -132,3 +132,7 @@ ffmpeg.exe
 /.idea/*
 /*.mp4
 transforms.trf
+ffplay.exe
+ffprobe.exe
+movie_info
+testdata2.mp4.lwi
